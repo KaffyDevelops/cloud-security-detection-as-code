@@ -1,0 +1,10 @@
+SigninLogs
+| where TimeGenerated > ago(10m)
+| where ResultType == "50126"
+| summarize
+    FailedAttempts = count(),
+    FirstSeen = min(TimeGenerated),
+    LastSeen = max(TimeGenerated)
+    by UserPrincipalName, IPAddress
+| where FailedAttempts >= 6
+| order by FailedAttempts desc
