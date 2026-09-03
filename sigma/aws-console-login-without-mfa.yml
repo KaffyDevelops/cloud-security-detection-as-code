@@ -1,0 +1,21 @@
+title: AWS Console Login Without MFA
+id: 7f4e7f4e-2c62-4f68-9b55-97db74aa8d10
+status: experimental
+description: Detects a successful AWS ConsoleLogin event where MFAUsed is No.
+author: Kafayat Faniran
+date: 2026-09-03
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: signin.amazonaws.com
+    eventName: ConsoleLogin
+    responseElements.ConsoleLogin: Success
+    additionalEventData.MFAUsed: 'No'
+  condition: selection
+falsepositives:
+  - Approved break-glass or transitional account use.
+level: high
+tags:
+  - attack.t1078
