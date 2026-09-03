@@ -1,0 +1,34 @@
+id: AWS-001
+title: Successful AWS console sign-in without MFA
+platform: aws
+service: AWS CloudTrail
+status: implemented
+severity: high
+description: Detects successful AWS Management Console authentication events where CloudTrail reports MFA was not used.
+data_sources:
+  - AWS CloudTrail delivered to CloudWatch Logs
+mitre_attack:
+  - technique_id: T1078
+    name: Valid Accounts
+query_file: query.logs-insights
+test_scenario:
+  - Use an authorised AWS lab account and a dedicated low-risk IAM test user if policy permits.
+  - Generate a controlled console authentication expected to record MFAUsed as No.
+  - Confirm the ConsoleLogin CloudTrail event is delivered to CloudWatch Logs.
+  - Run the query and compare the result with the controlled event.
+false_positives:
+  - Approved break-glass access where MFA is intentionally unavailable.
+  - Legacy or transitional accounts that have not yet been remediated.
+  - Authentication paths where the MFAUsed field behaves differently than expected.
+triage:
+  - Identify the principal and source IP.
+  - Confirm whether the account is expected to require MFA.
+  - Review device and location context plus adjacent CloudTrail activity.
+  - Look for privilege, credential or persistence changes after the sign-in.
+response:
+  - If unauthorised, secure the identity and investigate the session.
+  - Require or restore MFA according to the organisation identity policy.
+  - Review subsequent API activity for impact.
+limitations:
+  - CloudTrail field discovery depends on JSON events being delivered to CloudWatch Logs.
+  - Root and federated authentication paths may require separate handling and tuning.
