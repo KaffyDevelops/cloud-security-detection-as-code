@@ -1,0 +1,33 @@
+id: AZ-001
+title: Repeated failed Microsoft Entra sign-ins
+platform: azure
+service: Microsoft Entra ID
+status: implemented
+severity: medium
+description: Detects a user and source IP producing at least six invalid-credential sign-in failures within a ten-minute period.
+data_sources:
+  - Microsoft Entra ID SigninLogs
+mitre_attack:
+  - technique_id: T1110
+    name: Brute Force
+query_file: query.kql
+test_scenario:
+  - Use a dedicated non-privileged lab identity.
+  - Generate six controlled invalid-password attempts from one source IP within ten minutes.
+  - Confirm SigninLogs receives the expected 50126 failure events.
+  - Run the query and compare the returned count with the controlled activity.
+false_positives:
+  - Users repeatedly entering an old password.
+  - Legacy clients or cached credentials repeatedly attempting authentication.
+  - Misconfigured automation using an invalid password.
+triage:
+  - Review the affected user and source IP.
+  - Check whether multiple users are targeted from the same IP.
+  - Look for a successful sign-in after the failures.
+  - Review device, location and risk context before escalation.
+response:
+  - If activity is unauthorised, protect the identity and investigate the source.
+  - Tune thresholds or exclusions only after documenting recurring benign behaviour.
+limitations:
+  - ResultType values and available identity-risk fields can vary by authentication path and tenant configuration.
+  - A count threshold alone does not distinguish user error from password guessing.
