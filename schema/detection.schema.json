@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cloud Security Detection Metadata",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "platform",
+    "service",
+    "status",
+    "severity",
+    "description",
+    "data_sources",
+    "mitre_attack",
+    "query_file",
+    "test_scenario",
+    "false_positives",
+    "triage",
+    "response",
+    "limitations"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^(AZ|AWS|GCP)-[0-9]{3}$"},
+    "title": {"type": "string", "minLength": 8},
+    "platform": {"enum": ["azure", "aws", "gcp"]},
+    "status": {"enum": ["implemented", "tested", "validated", "deprecated"]},
+    "severity": {"enum": ["low", "medium", "high", "critical"]},
+    "query_file": {"type": "string", "minLength": 1}
+  }
+}
