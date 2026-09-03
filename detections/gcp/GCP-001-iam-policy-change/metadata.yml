@@ -1,0 +1,34 @@
+id: GCP-001
+title: Google Cloud IAM policy change
+platform: gcp
+service: Cloud Audit Logs
+status: implemented
+severity: high
+description: Surfaces administrative audit events whose method name indicates a SetIamPolicy operation.
+data_sources:
+  - Google Cloud Admin Activity audit logs
+mitre_attack:
+  - technique_id: T1098
+    name: Account Manipulation
+query_file: query.logging
+test_scenario:
+  - Use an authorised Google Cloud lab project.
+  - Apply a controlled low-risk IAM policy change to a test resource.
+  - Confirm the Admin Activity audit event is present.
+  - Run the logging query and verify the principal, resource and method.
+false_positives:
+  - Approved role assignment or removal.
+  - Infrastructure-as-code deployment.
+  - Automated organisation or project provisioning.
+triage:
+  - Review protoPayload.authenticationInfo.principalEmail.
+  - Identify the affected resource and policy change.
+  - Confirm an approved deployment or change request.
+  - Review adjacent audit events for additional access changes.
+response:
+  - Revert unauthorised access changes through approved procedures.
+  - Secure the initiating principal when compromise is suspected.
+  - Assess affected resources for subsequent access.
+limitations:
+  - SetIamPolicy occurs across multiple Google Cloud services, so resource-specific tuning may be required.
+  - The query identifies policy changes, not whether the new policy is more permissive.
