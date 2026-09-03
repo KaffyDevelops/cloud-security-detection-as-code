@@ -1,0 +1,10 @@
+fields @timestamp,
+       userIdentity.arn as principal,
+       sourceIPAddress,
+       additionalEventData.MFAUsed as mfaUsed,
+       responseElements.ConsoleLogin as loginResult
+| filter eventSource = "signin.amazonaws.com"
+| filter eventName = "ConsoleLogin"
+| filter loginResult = "Success"
+| filter mfaUsed = "No"
+| sort @timestamp desc
