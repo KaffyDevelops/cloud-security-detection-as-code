@@ -1,0 +1,18 @@
+AuditLogs
+| where TimeGenerated > ago(1h)
+| where Category == "RoleManagement"
+| where ActivityDisplayName has_any (
+    "Add member to role",
+    "Add eligible member to role"
+)
+| extend InitiatedByUser = tostring(InitiatedBy.user.userPrincipalName)
+| mv-expand TargetResources
+| project
+    TimeGenerated,
+    ActivityDisplayName,
+    Result,
+    InitiatedByUser,
+    TargetDisplayName = tostring(TargetResources.displayName),
+    TargetType = tostring(TargetResources.type),
+    CorrelationId
+| order by TimeGenerated desc
