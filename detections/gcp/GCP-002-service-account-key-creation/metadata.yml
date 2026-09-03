@@ -1,0 +1,33 @@
+id: GCP-002
+title: Google Cloud service account key creation
+platform: gcp
+service: Cloud Audit Logs
+status: implemented
+severity: high
+description: Detects creation of a user-managed service account key, a credential event that should be tightly governed in mature cloud environments.
+data_sources:
+  - Google Cloud Admin Activity audit logs for IAM
+mitre_attack:
+  - technique_id: T1098
+    name: Account Manipulation
+query_file: query.logging
+test_scenario:
+  - Use an authorised Google Cloud lab project and dedicated service account.
+  - Create a controlled service account key only if permitted by the lab policy.
+  - Confirm the CreateServiceAccountKey audit event appears.
+  - Delete the test key after evidence is captured and verify cleanup.
+false_positives:
+  - Approved legacy integration that still requires a user-managed service account key.
+  - Short-lived migration or compatibility testing performed through an authorised process.
+triage:
+  - Identify the initiating principal and target service account.
+  - Confirm an approved reason exists for creating a user-managed key.
+  - Review the service account IAM roles and recent activity.
+  - Check whether a managed identity or workload identity federation alternative is available.
+response:
+  - Disable or delete unauthorised keys promptly through approved procedures.
+  - Review the service account for misuse.
+  - Move workloads toward keyless authentication where feasible.
+limitations:
+  - Organisational policies may prevent key creation, which is itself useful validation evidence.
+  - Method naming can vary for related credential operations, so additional key-management detections may be needed.
