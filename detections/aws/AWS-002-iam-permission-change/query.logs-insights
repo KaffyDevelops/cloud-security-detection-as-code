@@ -1,0 +1,17 @@
+fields @timestamp,
+       userIdentity.arn as actor,
+       sourceIPAddress,
+       eventName,
+       requestParameters
+| filter eventSource = "iam.amazonaws.com"
+| filter eventName in [
+    "AttachUserPolicy",
+    "AttachRolePolicy",
+    "PutUserPolicy",
+    "PutRolePolicy",
+    "CreatePolicyVersion",
+    "SetDefaultPolicyVersion",
+    "AddUserToGroup",
+    "UpdateAssumeRolePolicy"
+]
+| sort @timestamp desc
