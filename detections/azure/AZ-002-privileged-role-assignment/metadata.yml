@@ -1,0 +1,34 @@
+id: AZ-002
+title: Privileged Microsoft Entra role assignment
+platform: azure
+service: Microsoft Entra ID
+status: implemented
+severity: high
+description: Surfaces Microsoft Entra role-management audit activity that adds a member or eligible member to a directory role.
+data_sources:
+  - Microsoft Entra ID AuditLogs
+mitre_attack:
+  - technique_id: T1098
+    name: Account Manipulation
+query_file: query.kql
+test_scenario:
+  - Use an authorised lab tenant and a low-risk test role.
+  - Create a controlled role assignment or eligible assignment.
+  - Confirm the RoleManagement audit event appears.
+  - Run the query and verify the initiating actor and target identity are visible.
+false_positives:
+  - Approved administrative role assignment.
+  - PIM onboarding or legitimate eligible-role configuration.
+  - Emergency access changes performed through an authorised process.
+triage:
+  - Identify the initiating actor, target principal and role.
+  - Confirm a ticket, approval or expected PIM workflow exists.
+  - Review whether the role is standing or eligible.
+  - Check surrounding audit activity for additional privilege changes.
+response:
+  - Escalate unexplained privileged assignments.
+  - Remove unauthorised privilege through the approved administrative process.
+  - Review the initiating account for compromise and preserve audit evidence.
+limitations:
+  - Activity display names can vary as Microsoft updates audit operations.
+  - The query is intentionally broad and requires tenant-specific tuning.
